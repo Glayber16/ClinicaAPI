@@ -2,13 +2,17 @@ using ClinicaAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ClinicaAPI.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace ClinicaAPI.Controller{
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase{
+        private readonly IConfiguration _configuration;
         private readonly UserService userService;
-        public UserController(UserService userServices){
+        
+        public UserController(UserService userServices, IConfiguration configuration){
             userService = userServices;
+            _configuration = configuration;
         }
         [HttpGet]
         public async Task<ActionResult<List<User>>> ListarUsuarios(){
@@ -16,11 +20,43 @@ namespace ClinicaAPI.Controller{
             return Ok(usuarios);
         }
 
-        [HttpPost]
+        [HttpPost("register")]
+        
         public async Task<ActionResult<User>> CadastrarUsuario(User usuario){
-            User novoUsuario = await userService.Cadastrar(usuario);
-            return Ok(novoUsuario);
+            
+            try{
+                User novoUsuario = await userService.Cadastrar(usuario);
+                return Ok(novoUsuario);
+            }
+            catch(Exception ex){
+                return BadRequest(new {error = ex.Message});
+            }
         }
+
+        [HttpPost("login")]
+
+        public async Task<ActionResult<User>> Login(User usuario){
+            Console.WriteLine("Endpoint de login acessado.");
+            Console.WriteLine($"Recebido: Email = {usuario.Email}, SenhaHash = {usuario.SenhaHash}");
+            try{
+   
+                User user = await userService.Login(usuario);
+                var tokenGenerator = new JwtTokenGenerator(_configuration);
+                var token = tokenGenerator.GenerateToken(user.Id.ToString(), user.Email);
+                
+                return Ok(new
+            {
+                User = user,
+                Token = token
+            });
+        
+            }
+            catch(Exception ex){
+                return BadRequest(new {error = ex.Message});
+            }
+            
+        }
+
         [HttpDelete ("{id}")]
         public async Task<ActionResult<User>> RemoverUsuario(int id){
             await userService.RemoveUsuario(id);
