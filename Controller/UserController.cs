@@ -36,20 +36,14 @@ namespace ClinicaAPI.Controller{
         [HttpPost("login")]
 
         public async Task<ActionResult<User>> Login(User usuario){
-            Console.WriteLine("Endpoint de login acessado.");
-            Console.WriteLine($"Recebido: Email = {usuario.Email}, SenhaHash = {usuario.SenhaHash}");
+    
             try{
    
                 User user = await userService.Login(usuario);
                 var tokenGenerator = new JwtTokenGenerator(_configuration);
                 var token = tokenGenerator.GenerateToken(user.Id.ToString(), user.Email);
-                
-                return Ok(new
-            {
-                User = user,
-                Token = token
-            });
-        
+   
+                return Ok(new { token, user });
             }
             catch(Exception ex){
                 return BadRequest(new {error = ex.Message});

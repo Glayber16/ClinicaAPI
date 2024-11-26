@@ -32,7 +32,7 @@ namespace ClinicaAPI.Services{
                 throw new Exception("Usuário não encontrado.");
             }
 
-            // Verifica se a senha fornecida corresponde ao hash armazenado
+            
             if (!SenhaHash.Utils.SenhaHash.VerificarSenha(usuario.SenhaHash, user.SenhaHash))
             {
                 throw new Exception("Senha inválida.");
