@@ -1,8 +1,8 @@
 using ClinicaAPI.Model;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using ClinicaAPI.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 namespace ClinicaAPI.Controller{
     [Route("api/[controller]")]
     [ApiController]
@@ -57,7 +57,7 @@ namespace ClinicaAPI.Controller{
             return Ok("Usuario removido com sucesso");
         }
         [HttpPut ("{id}")]
-        public async Task<ActionResult<User>> AtualizarUsuario(int id, [FromBody] User usuarioAtt){
+        public async Task<ActionResult<User>> AtualizarUsuario(int id, User usuarioAtt){
             var usuario = await userService.AtualizarUsuario(id, usuarioAtt);
             if(usuario == null) {
                 return NotFound("Usuario não encontrado");
