@@ -10,6 +10,8 @@ namespace ClinicaAPI.Data
         public DbSet<User> Usuarios { get; set; }
         public DbSet<Patient> Pacientes { get; set; }
         public DbSet<Doctor> Doutores { get; set; }
+        public DbSet<MedicalRecord> Prontuarios { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder){
 
             modelBuilder.Entity<User>()

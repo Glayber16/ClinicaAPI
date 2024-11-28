@@ -44,7 +44,7 @@ builder.Services.AddDbContext<ClinicaDBContext>(options =>
 
 
 builder.Services.AddScoped<UserService>();
-
+builder.Services.AddScoped<MedicalRecordService>();
 
 var app = builder.Build();
 

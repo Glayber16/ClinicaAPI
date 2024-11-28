@@ -1,14 +1,12 @@
 using ClinicaAPI.Model;
 using ClinicaAPI.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using SenhaHash.Utils;
+
 namespace ClinicaAPI.Services{
     public class UserService{
         private readonly ClinicaDBContext contextDB;
 
-        public UserService(ClinicaDBContext context)
-        {
+        public UserService(ClinicaDBContext context)  {
             contextDB = context;
         }
         public async Task<User> Cadastrar(User usuario){

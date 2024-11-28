@@ -30,6 +30,7 @@ namespace ClinicaAPI.Controller{
         public async Task<ActionResult<Patient>> CadastrarMedico(Doctor medico){
             try{
                 var novoMedico = await userService.CadastrarMedico(medico);
+                
                 return Ok(novoMedico);
             }
             catch (Exception ex) {
