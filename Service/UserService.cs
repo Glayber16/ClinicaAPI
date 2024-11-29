@@ -25,19 +25,13 @@ namespace ClinicaAPI.Services{
         public async Task<User> Login(User usuario){
             
             var user = await contextDB.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email);
-
-            if (user == null)
-            {
+            if (user == null){
                 throw new Exception("Usuário não encontrado.");
-            }
-
-            
-            if (!SenhaHash.Utils.SenhaHash.VerificarSenha(usuario.SenhaHash, user.SenhaHash))
-            {
+            } 
+            if (!SenhaHash.Utils.SenhaHash.VerificarSenha(usuario.SenhaHash, user.SenhaHash)){
                 throw new Exception("Senha inválida.");
             }
-
-            
+ 
             return user;
         }
 
