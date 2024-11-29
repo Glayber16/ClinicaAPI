@@ -37,5 +37,13 @@ namespace ClinicaAPI.Controller{
                 return BadRequest(new { error = ex.Message });
             }
         }
+        [HttpPut("{id}")]
+         public async Task<ActionResult<Doctor>> AtualizarMedico(int id, Doctor usuarioAtt){
+            var medico = await userService.AtualizarMedico(id, usuarioAtt);
+            if(medico == null) {
+                return NotFound("Usuario não encontrado");
+            }
+            return Ok(medico);
+        }
     }
 }

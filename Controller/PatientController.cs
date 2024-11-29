@@ -1,5 +1,5 @@
 using ClinicaAPI.Model;
-
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using ClinicaAPI.Services;
 
@@ -35,5 +35,15 @@ namespace ClinicaAPI.Controller{
                 return BadRequest(new { error = ex.Message });
             }
         }
+        [HttpPut("{id}")]
+         public async Task<ActionResult<Patient>> AtualizarPaciente(int id, Patient usuarioAtt){
+            
+            var paciente = await userService.AtualizarPaciente(id, usuarioAtt);
+            
+            if(paciente == null) {
+                return NotFound("Usuario não encontrado");
+            }
+            return Ok(paciente);
+        }
     }
-}
+}   

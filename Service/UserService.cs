@@ -1,6 +1,7 @@
 using ClinicaAPI.Model;
 using ClinicaAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicaAPI.Services{
     public class UserService{
@@ -11,7 +12,7 @@ namespace ClinicaAPI.Services{
         }
         public async Task<User> Cadastrar(User usuario){
             
-            if(await EmailExistsAsync(usuario.Email) == true){
+            if(await EmailExist(usuario.Email) == true){
                 throw new Exception("E-mail já está em uso.");
             }
             usuario.SenhaHash = SenhaHash.Utils.SenhaHash.HashPassword(usuario.SenhaHash);
@@ -54,7 +55,7 @@ namespace ClinicaAPI.Services{
             
         }
 
-        public async Task<bool> EmailExistsAsync(string email){
+        public async Task<bool> EmailExist(string email){
             return await contextDB.Usuarios.AnyAsync(u => u.Email == email);
         }
 
@@ -67,19 +68,43 @@ namespace ClinicaAPI.Services{
             usuario.Nome = usuarioAtt.Nome;
             usuario.CPF = usuarioAtt.CPF;
             usuario.Email = usuarioAtt.Email;
-            if (usuario is Patient patient){
-                patient.DataNascimento = (usuarioAtt as Patient).DataNascimento;
-            }
-            else if (usuario is Doctor doctor) {
-                doctor.CRM = (usuarioAtt as Doctor).CRM;
-            }
             await contextDB.SaveChangesAsync();
             return usuario;
         }
 
+        public async Task<Patient> AtualizarPaciente(int id, [FromBody] Patient patientAtt){
+            var patient = await contextDB.Usuarios.OfType<Patient>().FirstOrDefaultAsync(u => u.Id == id);
+
+            if (patient == null){
+                return null;
+            }
+            
+            
+            patient.CPF = patientAtt.CPF;
+            patient.Nome = patientAtt.Nome;
+            patient.DataNascimento = patientAtt.DataNascimento;
+
+            await contextDB.SaveChangesAsync();
+            return patient;
+        }
+
+        public async Task<Doctor> AtualizarMedico(int id, Doctor doctorAtt){
+            var doctor = await contextDB.Usuarios.OfType<Doctor>().FirstOrDefaultAsync(u => u.Id == id);
+            if (doctor == null){
+                return null;
+            }
+           
+            doctor.CPF = doctorAtt.CPF;
+            doctor.Nome = doctorAtt.Nome;
+            doctor.CRM = doctorAtt.CRM;
+
+            await contextDB.SaveChangesAsync();
+            return doctor;
+        }
+
         public async Task<Patient> CadastrarPaciente(Patient paciente){
     
-            if (await EmailExistsAsync(paciente.Email)){
+            if (await EmailExist(paciente.Email)){
                 throw new Exception("E-mail já está em uso.");
             }
             paciente.SenhaHash = SenhaHash.Utils.SenhaHash.HashPassword(paciente.SenhaHash);
@@ -95,7 +120,7 @@ namespace ClinicaAPI.Services{
 
         public async Task<Doctor> CadastrarMedico(Doctor medico){
     
-            if (await EmailExistsAsync(medico.Email)){
+            if (await EmailExist(medico.Email)){
                 throw new Exception("E-mail já está em uso.");
             }
             medico.SenhaHash = SenhaHash.Utils.SenhaHash.HashPassword(medico.SenhaHash);

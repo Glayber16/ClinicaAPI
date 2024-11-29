@@ -11,6 +11,11 @@ namespace ClinicaAPI.Services{
         }
 
         public async Task<MedicalRecord> CriarProntuarios(int PacienteId, string desc){
+            var pacienteExiste = await contextDB.Pacientes.AnyAsync(p => p.Id == PacienteId);
+            
+            if (!pacienteExiste){
+                throw new KeyNotFoundException("Paciente não encontrado.");
+            }
             var prontuario = new MedicalRecord{
                 PacienteId = PacienteId,
                 Descricao = desc

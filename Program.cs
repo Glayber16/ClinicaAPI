@@ -42,7 +42,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDbContext<ClinicaDBContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ClinicaDB")));
 
-
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MedicalRecordService>();
 

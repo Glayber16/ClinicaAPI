@@ -21,6 +21,7 @@ namespace ClinicaAPI.Controller{
 
         public async Task<ActionResult> CriarProntuario(MedicalRecord prontuario){
             try{
+                Console.WriteLine($"PacienteId: {prontuario.PacienteId}, Descricao: {prontuario.Descricao}");
                 var novoProntuario = await medicalRecordService.CriarProntuarios(prontuario.PacienteId, prontuario.Descricao);
                 return Ok(novoProntuario);
             }
@@ -33,7 +34,12 @@ namespace ClinicaAPI.Controller{
         public async Task<ActionResult<List<MedicalRecord>>> ListarProntuarios(){
             var prontuarios = await medicalRecordService.ListarProntuarios();
             return Ok(prontuarios);
-            
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<MedicalRecord>> ProcurarProntuario(int id){
+            var prontuario = await medicalRecordService.BuscarProntuario(id);
+            return Ok(prontuario);
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<MedicalRecord>> ExcluirProntuario(int id){

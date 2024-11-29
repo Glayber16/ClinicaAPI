@@ -23,8 +23,13 @@ namespace ClinicaAPI.Data
             
             modelBuilder.Entity<Doctor>()
                 .ToTable("Medicos")   
-                .HasBaseType<User>();   
+                .HasBaseType<User>();  
+
+           
+                
+            
         }
     }
+    
 }
 
