@@ -35,21 +35,32 @@ namespace ClinicaAPI.Controller{
 
         [HttpPost("login")]
 
-        public async Task<ActionResult<User>> Login(User usuario){
-    
+        public async Task<ActionResult<object>> Login(User usuario){
             try{
-   
-                User user = await userService.Login(usuario);
+                User user = await userService.Login(usuario);  
                 var tokenGenerator = new JwtTokenGenerator(_configuration);
                 var token = tokenGenerator.GenerateToken(user.Id.ToString(), user.Email);
-   
-                return Ok(new { token, user });
+
+                if (user is Patient paciente){
+                    return Ok(new{token,user = new{
+                        paciente.Id,
+                        paciente.Nome,
+                        paciente.Email,
+                        paciente.TipoUsuario,
+                        paciente.SenhaHash,
+                        paciente.DataNascimento, 
+                        paciente.CPF
+                    }
+                    });
+                }
+
+            return Ok(new{token, user});
+            }   
+            catch (Exception ex){
+                return BadRequest(new { error = ex.Message });
             }
-            catch(Exception ex){
-                return BadRequest(new {error = ex.Message});
-            }
-            
         }
+
 
         [HttpDelete ("{id}")]
         public async Task<ActionResult<User>> RemoverUsuario(int id){
